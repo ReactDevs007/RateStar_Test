@@ -5,7 +5,7 @@ import {AirbnbRating} from 'react-native-ratings';
 
 import type {BookData, DetailScreenNavigationProp} from '../utils/interfaces';
 import {HeartIcon} from '../icons/Heart';
-import { API } from '../utils/constant';
+import {API} from '../utils/constant';
 import axios from 'axios';
 
 interface BookProps {
@@ -27,19 +27,17 @@ const Book: FC<BookProps> = ({data}) => {
   const onFavourite = async () => {
     try {
       const {_id, ...savedData} = data;
-      savedData.isFavourite = !isFavourite
+      savedData.isFavourite = !isFavourite;
       await axios.put(`${API}/${_id}`, savedData);
       setIsFavourite(savedData.isFavourite);
-    } catch(err) {
-
-    }
+    } catch (err) {}
   };
 
   return (
     <View style={styles.container}>
       <Image style={styles.image} source={{uri: data.coverImageUrl}} />
       <View style={styles.bookInfoContainer}>
-        <View style={{alignItems: 'flex-start'}}>
+        <View style={styles.subContainer}>
           <Text style={styles.bookName} numberOfLines={1}>
             {data.name}
           </Text>
@@ -71,16 +69,20 @@ const styles = StyleSheet.create({
     height: 93,
     borderRadius: 12,
     shadowColor: '#000000',
-    shadowOffset: {width: 1, height: 1},
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.25,
-    shadowRadius: 12,
+    shadowRadius: 3,
     elevation: 5,
-    overflow: "hidden",
     marginBottom: 24,
+  },
+  subContainer: {
+    alignItems: 'flex-start',
   },
   image: {
     width: 80,
-    height: '100%',
+    borderTopLeftRadius: 12,
+    borderBottomLeftRadius: 12,
+    marginBottom: 0,
   },
   bookInfoContainer: {
     marginHorizontal: 18,

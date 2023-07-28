@@ -3,7 +3,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  FlatList,
   StyleSheet,
   ScrollView,
   SafeAreaView,
@@ -45,11 +44,11 @@ const Home = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{marginBottom: 24}}>
+      <View style={styles.bookContainer}>
         <Text style={styles.headerText}>Books</Text>
       </View>
       {loading ? (
-        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+        <View style={styles.loadingContainer}>
           <ActivityIndicator size={48} color={'#000'} />
         </View>
       ) : (
@@ -76,6 +75,13 @@ const styles = StyleSheet.create({
   container: {
     marginHorizontal: 24,
     marginTop: 36,
+  },
+  bookContainer: {
+    marginBottom: 24,
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerText: {
     fontSize: 32,

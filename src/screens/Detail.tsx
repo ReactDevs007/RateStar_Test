@@ -45,9 +45,10 @@ const Detail = () => {
   const [processingUps, setprocessingUps] = useState<boolean>(false);
   const [processingDel, setprocessingDel] = useState<boolean>(false);
 
-  const loadDetail = useCallback(async (bookId: string) => {
+  const loadDetail = useCallback(async (detailBookId: string) => {
     setLoading(true);
-    const res = await axios.get<BookData>(`${API}/${bookId}`);
+    const res = await axios.get<BookData>(`${API}/${detailBookId}`);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const {_id, ...savedData} = res.data;
     setData(savedData);
     setLoading(false);
@@ -57,6 +58,7 @@ const Detail = () => {
     if (bookId) {
       loadDetail(bookId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookId]);
 
   const onChangeText = (key: keyof BookData) => (text: string) => {
@@ -86,18 +88,19 @@ const Detail = () => {
       return false;
     }
 
-    if(!moment(data.publishedAt, "DD-MM-YYYY").isValid()) {
-      console.log("not valid")
-      return false
+    if (!moment(data.publishedAt, 'DD-MM-YYYY').isValid()) {
+      return false;
     }
     return true;
   };
 
   const onUpdate = async () => {
-    if (!validate()) return;
-    
+    if (!validate()) {
+      return;
+    }
+
     const savedData = {...data};
-    savedData.updatedAt = moment().format("DD-MM-YYYY");
+    savedData.updatedAt = moment().format('DD-MM-YYYY');
 
     try {
       setprocessingUps(true);
@@ -108,7 +111,7 @@ const Detail = () => {
           Math.random() * 100000,
         )}`;
         await axios.post(API, savedData);
-        setData({...initialBookData})
+        setData({...initialBookData});
       }
       setIsUpdated();
     } catch (err) {
@@ -137,11 +140,13 @@ const Detail = () => {
       <View style={styles.headerContainer}>
         <Text style={styles.headerText}>Edit book</Text>
         <TouchableOpacity onPress={onChangeFavourite}>
-          <HeartIcon width={32} height={30} fill={data.isFavourite} />
+          <View style={styles.heartContainer}>
+            <HeartIcon width={32} height={30} fill={data.isFavourite} />
+          </View>
         </TouchableOpacity>
       </View>
       {loading ? (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <View style={styles.loadingContainer}>
           <ActivityIndicator size={48} color={'#000'} />
         </View>
       ) : (
@@ -157,6 +162,8 @@ const Detail = () => {
             numberOfLines={4}
             style={[styles.inputBox, styles.descInputBox]}
             value={data.description}
+            multiline={true}
+            textAlignVertical="top"
             onChangeText={onChangeText('description')}
           />
           <Text style={styles.inputLabel}>Authors</Text>
@@ -171,7 +178,7 @@ const Detail = () => {
             value={data.publishedAt}
             onChangeText={onChangeText('publishedAt')}
           />
-          <View style={{alignItems: 'flex-start', marginBottom: 36}}>
+          <View style={styles.ratingContainer}>
             <Text style={styles.inputLabel}>Rating</Text>
             <AirbnbRating
               selectedColor="#002B56"
@@ -218,11 +225,27 @@ const styles = StyleSheet.create({
     marginHorizontal: 24,
     marginTop: 36,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  ratingContainer: {
+    alignItems: 'flex-start',
+    marginBottom: 36,
+  },
   headerContainer: {
     flexDirection: 'row',
     marginBottom: 24,
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  heartContainer: {
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 3},
+    shadowOpacity: 0.25,
+    shadowRadius: 3,
+    elevation: 5,
   },
   headerText: {
     fontSize: 32,
@@ -242,9 +265,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     color: 'black',
     marginBottom: 16,
+    height: 48,
   },
   descInputBox: {
-    textAlignVertical: 'top',
+    height: 104,
   },
   button: {
     backgroundColor: '#002B56',
